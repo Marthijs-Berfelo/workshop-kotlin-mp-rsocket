@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: mp-reactive-chat
+
+logging:
+  level:
+    root: debug
+    okhttp3: info
+    io:
+      netty: info
+      fabric8: info
+    reactor:
+      netty: warn
+    org:
+      springframework:
+        _: info
+        cloud:
+          _: info
+      hibernate: info
+    nl:
+      hybrit:
+        workshop:
+          service: debug
+          common: debug

@@ -1,7 +1,11 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotlinVersion: String by project
 val javaVersion: String by project
 val ktorVersion: String by project
+
+val openApiVersion: String by project
 
 val kotlinRSocketVersion: String by project
 val kotlinDateTimeVersion: String by project
@@ -42,7 +46,7 @@ kotlin {
         apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
         tasks {
-            withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            withType<KotlinCompile> {
                 kotlinOptions {
                     freeCompilerArgs = listOf("-Xjsr305=strict")
                     jvmTarget = JavaVersion.valueOf(javaVersion).majorVersion
@@ -54,7 +58,7 @@ kotlin {
         }
         withJava()
     }
-    js(compiler = org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType.IR) {
+    js(compiler = KotlinJsCompilerType.IR) {
         binaries.executable()
         browser {
             commonWebpackConfig {
@@ -122,6 +126,9 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-reflect")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+                implementation("org.springdoc:springdoc-openapi-webflux-ui:$openApiVersion")
+                implementation("org.springdoc:springdoc-openapi-kotlin:$openApiVersion")
+
             }
         }
         val jvmTest by getting {
@@ -136,7 +143,7 @@ kotlin {
     tasks {
         getByName<Copy>("jvmProcessResources") {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            dependsOn(getByName("jsBrowserDevelopmentWebpack"))
+            dependsOn(getByName("jsBrowserProductionWebpack"))
         }
     }
 }
