@@ -34,3 +34,6 @@ fun NewMessageTO.toMessage(id: String, fromUser: UserTO): MessageTO =
         message = message,
         receivedAt = Clock.System.now()
     )
+
+fun Pair<UserTO, List<MessageTO>>.toConversation() =
+    ConversationTO(first, second)

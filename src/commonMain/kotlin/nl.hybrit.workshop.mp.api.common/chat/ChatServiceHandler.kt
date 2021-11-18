@@ -1,9 +1,7 @@
 package nl.hybrit.workshop.mp.api.common.chat
 
-import nl.hybrit.workshop.mp.api.common.message.ConversationTO
-import nl.hybrit.workshop.mp.api.common.message.MessageService
-import nl.hybrit.workshop.mp.api.common.message.MessageTO
-import nl.hybrit.workshop.mp.api.common.message.NewMessageTO
+import kotlinx.coroutines.flow.toList
+import nl.hybrit.workshop.mp.api.common.message.*
 import nl.hybrit.workshop.mp.api.common.user.UserRegistrationTO
 import nl.hybrit.workshop.mp.api.common.user.UserService
 import nl.hybrit.workshop.mp.api.common.user.UserTO
@@ -12,8 +10,18 @@ interface ChatServiceHandler {
     val userService: UserService
     val messageService: MessageService
 
-    suspend fun register(user: UserRegistrationTO): UserTO
-    suspend fun getConversation(peerId: String): ConversationTO
-    suspend fun receive(message: NewMessageTO): MessageTO
-    fun logout(userId: String)
+    suspend fun register(user: UserRegistrationTO): UserTO =
+        userService.create(user)
+
+    suspend fun getConversation(userId: String, peerId: String): ConversationTO? =
+        userService.getById(peerId)
+            ?.let {
+                it to messageService.conversation(userId, peerId).toList()
+            }
+            ?.toConversation()
+
+    suspend fun receive(message: NewMessageTO, senderId: String): MessageTO =
+        messageService.create(message, senderId)
+
+    fun logout(userId: String) = userService.deleteById(userId)
 }

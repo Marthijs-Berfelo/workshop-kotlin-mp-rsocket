@@ -7,7 +7,7 @@ interface UserService {
 
     suspend fun validateName(name: String): Boolean
     suspend fun create(user: UserRegistrationTO): UserTO
-    suspend fun delete(user: UserTO): Long
+    fun deleteById(id: String)
     suspend fun getById(id: String): UserTO?
     fun getAll(): Flow<UserUpdateTO>
     fun updates(): SharedFlow<UserUpdateTO>
